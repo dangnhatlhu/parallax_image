@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <meta name="description" content="Hướng dẫn tạo hiệu ứng parallax đơn giản bằng CSS, tương thích desktop và mobile.">
+  <title>Parallax đơn giản bằng CSS</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17212b;
+      --muted: #566574;
+      --accent: #d2774a;
+      --paper: #f7f5f0;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, "Segoe UI", sans-serif;
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .topbar {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem clamp(1.25rem, 6vw, 5rem);
+      color: #fff;
+    }
+
+    .brand {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .topbar nav a {
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    .hero {
+      display: grid;
+      min-height: min(760px, 100svh);
+      min-height: min(760px, 100vh);
+      place-items: center;
+      padding: 7rem 1.25rem 5rem;
+      background-color: #25343c;
+      background-image:
+        linear-gradient(110deg, rgb(9 20 27 / 72%), rgb(9 20 27 / 22%)),
+        url("https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=2200&q=85");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+      color: #fff;
+      text-align: center;
+    }
+
+    .hero-content {
+      width: min(100%, 760px);
+    }
+
+    .eyebrow {
+      margin: 0 0 0.8rem;
+      color: #f3bd94;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 1.1rem;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.7rem, 8vw, 6.4rem);
+      font-weight: 400;
+      letter-spacing: -0.045em;
+      line-height: 1.02;
+    }
+
+    .hero-content > p:not(.eyebrow) {
+      max-width: 590px;
+      margin: 0 auto 2rem;
+      color: rgb(255 255 255 / 86%);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+
+    .button {
+      display: inline-block;
+      border: 1px solid rgb(255 255 255 / 72%);
+      border-radius: 999px;
+      padding: 0.72rem 1.25rem;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background-color 180ms ease, color 180ms ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .content {
+      width: min(100% - 2.5rem, 760px);
+      margin-inline: auto;
+      padding-block: clamp(4rem, 9vw, 7rem);
+    }
+
+    .content h2 {
+      margin-bottom: 1rem;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 400;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+    }
+
+    .content p {
+      color: var(--muted);
+    }
+
+    .steps {
+      display: grid;
+      gap: 1rem;
+      margin: 2rem 0 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: steps;
+    }
+
+    .steps li {
+      position: relative;
+      min-height: 3.5rem;
+      padding: 0.65rem 0 0.65rem 3.5rem;
+      color: var(--muted);
+      counter-increment: steps;
+    }
+
+    .steps li::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: grid;
+      width: 2.7rem;
+      height: 2.7rem;
+      border: 1px solid #dfc8b9;
+      border-radius: 50%;
+      color: var(--accent);
+      content: counter(steps, decimal-leading-zero);
+      font-size: 0.8rem;
+      font-weight: 700;
+      place-items: center;
+    }
+
+    .steps strong {
+      color: var(--ink);
+    }
+
+    .code-note {
+      overflow-x: auto;
+      margin-top: 2rem;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      background: #17212b;
+      color: #f7f5f0;
+      font: 0.9rem/1.8 "Cascadia Code", Consolas, monospace;
+      white-space: pre;
+    }
+
+    .second-parallax {
+      display: grid;
+      min-height: 390px;
+      padding: 4rem 1.25rem;
+      background-color: #34464c;
+      background-image:
+        linear-gradient(rgb(10 22 28 / 48%), rgb(10 22 28 / 48%)),
+        url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=85");
+      background-position: center 55%;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+      color: #fff;
+      place-items: center;
+      text-align: center;
+    }
+
+    .second-parallax blockquote {
+      width: min(100%, 760px);
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.8rem, 5vw, 3.5rem);
+      line-height: 1.2;
+    }
+
+    .footer {
+      padding: 1.5rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        padding: 1rem 1.25rem;
+      }
+
+      .hero {
+        min-height: 76svh;
+        min-height: 76vh;
+        background-attachment: scroll;
+        background-position: center;
+      }
+
+      .second-parallax {
+        min-height: 300px;
+        background-attachment: scroll;
+      }
+
+      .content {
+        width: min(100% - 2rem, 760px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Parallax, về đầu trang">Parallax / 01</a>
+    <nav aria-label="Điều hướng chính">
+      <a href="#huong-dan">Cách thực hiện</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <p class="eyebrow">Chỉ với CSS</p>
+        <h1 id="hero-title">Chậm lại một nhịp.</h1>
+        <p>
+          Parallax tạo cảm giác chiều sâu khi ảnh nền chuyển động chậm hơn
+          nội dung phía trước. Một vài dòng CSS là đủ để bắt đầu.
+        </p>
+        <a class="button" href="#huong-dan">Khám phá cách làm</a>
+      </div>
+    </section>
+
+    <section class="content" id="huong-dan" aria-labelledby="guide-title">
+      <p class="eyebrow">Hướng dẫn nhanh</p>
+      <h2 id="guide-title">Tạo parallax bằng CSS như thế nào?</h2>
+      <p>
+        Cách đơn giản nhất là dùng ảnh làm nền cho section, sau đó đặt
+        <code>background-attachment: fixed</code>. Khi trang cuộn, nền giữ
+        nguyên vị trí trong khung nhìn, tạo cảm giác chuyển động khác tốc độ
+        với nội dung.
+      </p>
+      <ol class="steps">
+        <li><strong>Chọn ảnh nền:</strong> ưu tiên ảnh ngang, độ phân giải đủ lớn.</li>
+        <li><strong>Phủ ảnh kín section:</strong> dùng <code>background-size: cover</code> và căn giữa ảnh.</li>
+        <li><strong>Bật parallax:</strong> thêm <code>background-attachment: fixed</code> cho màn hình lớn.</li>
+        <li><strong>Điều chỉnh cho mobile:</strong> dùng <code>scroll</code> để tránh lỗi hiển thị trên trình duyệt di động.</li>
+      </ol>
+      <pre class="code-note"><code>.parallax {
+  background-image: url("anh-cua-ban.jpg");
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+@media (max-width: 700px) {
+  .parallax {
+    background-attachment: scroll;
+  }
+}</code></pre>
+      <p>
+        Trên một số trình duyệt mobile, chế độ nền cố định không được hỗ trợ
+        nhất quán. Vì vậy ví dụ này giữ ảnh ở chế độ <code>cover</code> và
+        chuyển sang cuộn bình thường trên màn hình nhỏ để ảnh không bị phóng
+        sai hoặc giật.
+      </p>
+    </section>
+
+    <section class="second-parallax" aria-label="Ví dụ section parallax thứ hai">
+      <blockquote>“Một chuyển động nhỏ, tạo nên chiều sâu lớn.”</blockquote>
+    </section>
+
+    <footer class="footer">
+      Ví dụ parallax thuần HTML và CSS · Thay URL ảnh nền bằng ảnh của bạn.
+    </footer>
+  </main>
+</body>
+</html>
